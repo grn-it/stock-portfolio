@@ -1,0 +1,84 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Stock
+ *
+ * @ORM\Table(name="stock", indexes={@ORM\Index(name="FK_symbol_symbolInfo", columns={"symbolId"})})
+ * @ORM\Entity
+ */
+class Stock
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date", type="date", nullable=true)
+     */
+    private $date;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="open", type="decimal", precision=10, scale=6, nullable=true)
+     */
+    private $open;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="high", type="decimal", precision=10, scale=6, nullable=true)
+     */
+    private $high;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="low", type="decimal", precision=10, scale=6, nullable=true)
+     */
+    private $low;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="close", type="decimal", precision=10, scale=6, nullable=true)
+     */
+    private $close;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="change", type="decimal", precision=10, scale=6, nullable=true)
+     */
+    private $change;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="volume", type="bigint", nullable=true)
+     */
+    private $volume;
+
+    /**
+     * @var \Symbol
+     *
+     * @ORM\ManyToOne(targetEntity="Symbol")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="symbolId", referencedColumnName="id")
+     * })
+     */
+    private $symbolid;
+
+
+}

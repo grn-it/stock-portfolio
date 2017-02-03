@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <h1>{% block title %}Список портфелей акций{% endblock %}</h1>
+
+  {% if portfolios %}
+    <div id="portfolio-container">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th width="80%">Название портфеля</th>
+            <th></th>
+          </tr>
+        </thead>
+        
+        <tbody>
+          {% for portfolio in portfolios %}
+            <tr>
+              <td class="cell-portfolio-name"><a href="{{ path('portfolio_show', { 'id': portfolio.id }) }}">{{ portfolio.name }}</a></td>
+              <td>
+                <a class="btn btn-default" href="{{ path('portfolio_edit', { 'id': portfolio.id }) }}">Редактировать</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="elements-group">
+      <a href="{{ path('portfolio_new') }}" class="btn btn-primary">Добавить портфель акций</a>
+    </div>
+
+  {% else %}
+    <div class="elements-group">У вас пока нет ни одного портфеля акций</div>
+
+    <div class="elements-group">
+      <a href="{{ path('portfolio_new') }}" class="btn btn-primary">Создать портфель акций</a>
+    </div>
+  {% endif %}
+            
+{% endblock %}

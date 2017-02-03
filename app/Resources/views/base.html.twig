@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        
+        <title>{% block title %}{% endblock %}</title>
+        
+        {% block stylesheets %}{% endblock %}
+        
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        
+        <link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+        
+        <script src="{{ asset('js/jquery-3.1.1.min.js') }}"></script>
+        <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
+    </head>
+    <body>
+      
+    {% if app.user %}
+      <div id="nav-bar" class="container-fluid">
+        <div class="row">
+          <div class="col-xs-6 col-centered">
+            <nav class="navbar navbar-default">
+              <div class="container-fluid">
+                <div class="navbar-header">
+                  <a class="navbar-brand" href="{{ path('homepage') }}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Главная</a>
+                </div>
+    
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                  <ul class="nav navbar-nav navbar-right">
+                    
+                    <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span> Портфели <span class="caret"></span></a>
+                      <ul class="dropdown-menu">
+                        {{ render(controller('AppBundle:Portfolio:list')) }}
+                        <li role="separator" class="divider"></li>
+                        <li><a href="{{ path('portfolio_new') }}">Создать портфель</a></li>
+                      </ul>
+                    </li>
+                    
+                    <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{ app.user.username }}  <span class="caret"></span></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="{{ path('fos_user_security_logout') }}">Выход</a></li>
+                      </ul>
+                    </li>
+                    
+                  </ul>
+                </div>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+      
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-xs-6 col-centered">
+          <div id="main-container">
+            {% block body %}{% endblock %}
+          </div>
+        </div>
+      </div>
+    </div>
+            
+      {% block javascripts %}{% endblock %}
+    </body>
+</html>

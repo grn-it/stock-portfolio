@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <h1>{% block title %}Портфель: {{ portfolio.name }} {% endblock %}</h1>
+
+  <div class="group-margin">
+    <a class="btn btn-primary" href="{{ path('portfolio_chart', { 'id': portfolio.id }) }}"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Показать график</a>
+
+    <a class="btn btn-default" href="{{ path('portfolio_edit', { 'id': portfolio.id }) }}">Редактировать</a>
+  </div>
+
+  <div class="group-margin">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Список акций в портфеле</th>
+          <th>Цена ($)</th>
+          <th>Изменение</th>
+          <th>Объем</th>
+        </tr>
+      </thead>
+      
+      <tbody>
+        {% for stock in stocks %}
+
+          {% if stock.change < 0 %}
+            {% set change_color = 'text-red' %}
+          {% else %}
+            {% set change_color = 'text-green' %}
+          {% endif %}
+
+          <tr>
+            <td>{{ stock.symbolid.name }}</td>
+            <td>{{ stock.close|number_format(2) }}</td>
+            <td><div class="{{ change_color }}">{{ stock.change|number_format(2) }}</div></td>
+            <td>{{ stock.volume|number_format(0, ',', ',') }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+      
+{% endblock %}

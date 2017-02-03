@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  
+  <script src="{{ asset('js/portfolio/new.js') }}"></script>
+  
+  <h1>{% block title %}Создание портфеля акций{% endblock %}</h1>
+
+  {{ form_start(form) }}
+          
+    <div class="group-margin">
+      {{ form_row(form.name, { 'label': 'Название портфеля', 'attr': {'class': 'form-control input-standard-width', 'required': 'required'}} ) }}
+    </div>
+
+    <div class="group-margin">
+
+      <select id="symbol" class="form-control" data-name="{{ form.children.symbolid.vars.full_name }}">
+        {% for choice in form.children.symbolid.vars.choices %}
+          <option value="{{ choice.value }}">{{ choice.label }}</option>
+        {% endfor %}
+      </select>
+
+      <button id="add-symbol" class="btn btn-primary" type="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Добавить</button>
+    </div>
+
+    <div class="group-margin">
+      <div id="symbols-container">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th width="85%">Список акций в портфеле</td>
+              <th></td>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr class="symbols-empty">
+              <td colspan="2">Пусто</td>
+            <tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="group-margin">
+      <input class="btn btn-success" type="submit" value="Создать портфель акций" />
+    </div>
+
+    {{ form_row(form._token) }}
+        
+  {{ form_end(form, {'render_rest': false}) }}
+
+{% endblock %}

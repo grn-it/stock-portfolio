@@ -1,0 +1,44 @@
+{% extends "base.html.twig" %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block body %}
+  
+  <div id="register-container" class="panel panel-success">
+    <div class="panel-heading">
+      <h3 class="panel-title">{% block title %}Регистрация{% endblock %}</h3>
+    </div>
+
+    <div class="panel-body">
+
+      <form action="{{ path('fos_user_registration_register') }}" {{ form_enctype(form) }} method="POST" class="fos_user_registration_register">
+        <div class="elements-group">
+          {{ form_row(form.username, { 'attr': {'class': 'form-control'} }) }}
+        </div>
+
+        <div class="elements-group">
+          {{ form_row(form.email, { 'attr': {'class': 'form-control'}, 'label': 'Email' }) }}
+        </div>
+
+        <div class="elements-group">
+          {{ form_row(form.plainPassword.first, { 'attr': {'class': 'form-control'} }) }}
+        </div>
+
+        <div class="elements-group">
+          {{ form_row(form.plainPassword.second, { 'attr': {'class': 'form-control'} }) }}
+        </div>
+
+        <div class="elements-group centered">
+          <input type="submit" class="btn btn-primary" value="Регистрация" />
+        </div>
+
+        {{ form_row(form._token) }}
+      </form>
+    </div>
+  </div>
+
+  <div class="elements-group centered">
+    <a href="{{ path('fos_user_security_login') }}">Вход</a>
+  </div>
+  
+{% endblock body %}

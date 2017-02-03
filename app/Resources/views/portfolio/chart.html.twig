@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+  <script>
+    var portfolioName = '{{ portfolio.name }}';
+  </script>
+  
+  <script src="{{ asset('highcharts/highstock.js') }}"></script>
+  <script src="{{ asset('highcharts/exporting.js') }}"></script>
+  <script src="{{ asset('js/chart.js') }}"></script>
+
+  <h1>{% block title %}График портфеля акций: {{ portfolio.name }}{% endblock %}</h1>
+        
+  <div class="group-margin">
+    <a class="btn btn-primary" href="{{ path('portfolio_show', { 'id': portfolio.id }) }}"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Вернуться к портфелю</a>
+  </div>
+
+  <div class="group-margin">
+    <div id="chart"></div>
+  </div>
+    
+{% endblock %}

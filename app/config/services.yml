@@ -1,0 +1,20 @@
+# Learn more about services, parameters and containers at
+# http://symfony.com/doc/current/service_container.html
+parameters:
+#    parameter_name: value
+
+services:
+#    service_name:
+#        class: AppBundle\Directory\ClassName
+#        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+
+    app.registration_success:
+        class: AppBundle\EventSubscriber\RegistrationSuccessSubscriber
+        arguments: [@router]
+        tags:
+          - { name: kernel.event_subscriber }
+          
+    app.stock_manager:
+        class: AppBundle\Stock\StockManager
+        arguments: [ @doctrine.orm.entity_manager ]
+        

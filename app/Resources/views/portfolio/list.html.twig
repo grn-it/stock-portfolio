@@ -1,0 +1,3 @@
+{% for portfolio in portfolios %}
+  <li><a href="{{ path('portfolio_show', { 'id': portfolio.id }) }}">{{ portfolio.name }}</a></li>
+{% endfor %}

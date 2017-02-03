@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  
+  <script src="{{ asset('js/portfolio/edit.js') }}"></script>
+  
+  <h1>{% block title %}Редактирование портфеля{% endblock %}</h1>
+
+  {{ form_start(edit_form) }}
+
+    <div class="group-margin">
+      {{ form_row(edit_form.name, { 'label': 'Название портфеля', 'attr': {'class': 'form-control input-standard-width', 'required': 'required'}} ) }}
+    </div>
+
+    <div class="group-margin">
+      <select id="symbol" class="form-control" data-name="{{ edit_form.children.symbolid.vars.full_name }}">
+        {% for choice in edit_form.children.symbolid.vars.choices %}
+          <option value="{{ choice.value }}">{{ choice.label }}</option>
+        {% endfor %}
+      </select>
+
+      <button id="add-symbol" class="btn btn-primary" type="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Добавить</button>
+    </div>
+
+    <div class="group-margin">
+      <div id="symbols-container">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th width="85%">Список акций в портфеле</td>
+              <th></td>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            {% if edit_form.children.symbolid.vars.data|length %}
+              {% set symbol_empty_style = "display: none;" %}
+            {% else %}
+               {% set symbol_empty_style = "" %}
+            {% endif %}
+
+              <tr class="symbols-empty" style="{{ symbol_empty_style }}}">
+                <td colspan="2">Пусто</td>
+              <tr>
+
+            {% for key, symbolName in edit_form.children.symbolid.vars.data %}
+
+              <tr class="row-symbol" data-symbol-id="{{ edit_form.children.symbolid.vars.value[key] }}"><td class="cell-symbol-name">{{ symbolName }}</td><td><button type="button" class="delete-symbol btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Удалить</button><input name="{{ edit_form.children.symbolid.vars.full_name }}" type=hidden value="{{ edit_form.children.symbolid.vars.value[key] }}" /></td></tr>
+
+            {% endfor %}
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="group-margin">
+      <button class="btn btn-success" type="submit"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Сохранить изменения</button>
+    </div>
+
+    {{ form_row(edit_form._token) }}
+
+  {{ form_end(edit_form, {'render_rest': false}) }}
+
+  <div class="group-margin">
+    
+    {{ form_start(delete_form) }}
+        <button class="btn btn-danger" type="submit"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Удалить портфель</button>
+    {{ form_end(delete_form) }}
+    
+  </div>
+    
+{% endblock %}

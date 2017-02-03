@@ -1,0 +1,79 @@
+.col-centered{
+    float: none;
+    margin: 0 auto;
+}
+
+ul.nav li.dropdown:hover > ul.dropdown-menu {
+    display: block;    
+}
+
+@media (min-width: 979px) {
+  ul.nav li.dropdown:hover > ul.dropdown-menu {
+    display: block;
+  }
+}
+
+.glyphicon-briefcase, 
+.glyphicon-user {
+  font-size: 17px;
+  vertical-align: -3px;
+}
+
+.row {
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+.panel-title {
+  text-align: center;
+}
+
+.elements-group {
+  margin-top: 10px;
+}
+
+.group-margin {
+  margin-top: 20px;
+}
+
+.centered {
+  text-align: center;
+}
+
+#login-container, 
+#register-container {
+  margin-top: 100px;
+  width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.input-standard-width {
+  width: 300px;
+}
+
+select {
+  width: inherit !important;
+  display: inline-block !important;
+}
+
+.cell-portfolio-name {
+  vertical-align: middle !important;
+}
+
+.cell-symbol-name {
+  vertical-align: middle !important;
+}
+
+.text-red {
+  color: #c0392b;
+}
+
+.text-green {
+  color: #16a085;
+}
+
+#main-container {
+  padding-left: 15px;
+  padding-right: 15px;
+}

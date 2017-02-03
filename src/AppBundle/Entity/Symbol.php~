@@ -1,0 +1,46 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Symbol
+ *
+ * @ORM\Table(name="symbol")
+ * @ORM\Entity
+ */
+class Symbol
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=50, nullable=true)
+     */
+    private $name;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="Portfolio", mappedBy="symbolid")
+     */
+    private $portfolioid;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->portfolioid = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+}
