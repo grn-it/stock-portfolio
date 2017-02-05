@@ -64,7 +64,7 @@ class Portfolio
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -87,7 +87,7 @@ class Portfolio
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -110,7 +110,7 @@ class Portfolio
     /**
      * Get userid
      *
-     * @return \AppBundle\Entity\User 
+     * @return \AppBundle\Entity\User
      */
     public function getUserid()
     {
@@ -143,28 +143,37 @@ class Portfolio
     /**
      * Get symbolid
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getSymbolid()
     {
         return $this->symbolid;
     }
-    
-    public function isOwner(\AppBundle\Entity\User $user) {
-    
+
+    /**
+     * Проверяет, является ли указанный пользователь текущим
+     *
+     * @param \AppBundle\Entity\User $user
+     * @return boolean
+     */
+    public function isOwner(\AppBundle\Entity\User $user)
+    {
         if (is_null($user) || is_null($this->getUserid())) {
             return false;
         }
-        
+
         if ($user->getId() === $this->getUserid()->getId()) {
             return true;
         }
-        
+
         return false;
-    } 
-    
-    public function __toString() {
-        
+    }
+
+    /**
+     * @return type
+     */
+    public function __toString()
+    {
         return $this->name;
     }
 }

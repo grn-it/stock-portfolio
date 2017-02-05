@@ -6,6 +6,9 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Форма «Портфель»
+ */
 class PortfolioType extends AbstractType
 {
     /**
@@ -15,15 +18,13 @@ class PortfolioType extends AbstractType
     {
         $builder->add('name')->add('symbolid');
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\Portfolio'
-        ));
+        $resolver->setDefaults(array('data_class' => 'AppBundle\Entity\Portfolio'));
     }
 
     /**
@@ -33,6 +34,4 @@ class PortfolioType extends AbstractType
     {
         return 'appbundle_portfolio';
     }
-
-
 }

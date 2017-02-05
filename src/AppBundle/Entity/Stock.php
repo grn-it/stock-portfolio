@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Stock
  *
- * @ORM\Table(name="stock", indexes={@ORM\Index(name="FK_symbol_symbolInfo", columns={"symbolId"})})
+ * @ORM\Table(name="stock", indexes={@ORM\Index(name="FK_symbol_symbolInfo", columns={"symbolId"}), @ORM\Index(name="date", columns={"date"})})
  * @ORM\Entity(repositoryClass="AppBundle\Repository\StockRepository")
  */
 class Stock
@@ -85,7 +85,7 @@ class Stock
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -108,7 +108,7 @@ class Stock
     /**
      * Get date
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDate()
     {
@@ -131,7 +131,7 @@ class Stock
     /**
      * Get open
      *
-     * @return string 
+     * @return string
      */
     public function getOpen()
     {
@@ -154,7 +154,7 @@ class Stock
     /**
      * Get high
      *
-     * @return string 
+     * @return string
      */
     public function getHigh()
     {
@@ -177,7 +177,7 @@ class Stock
     /**
      * Get low
      *
-     * @return string 
+     * @return string
      */
     public function getLow()
     {
@@ -200,7 +200,7 @@ class Stock
     /**
      * Get close
      *
-     * @return string 
+     * @return string
      */
     public function getClose()
     {
@@ -223,7 +223,7 @@ class Stock
     /**
      * Get change
      *
-     * @return string 
+     * @return string
      */
     public function getChange()
     {
@@ -246,7 +246,7 @@ class Stock
     /**
      * Get volume
      *
-     * @return integer 
+     * @return integer
      */
     public function getVolume()
     {
@@ -269,7 +269,7 @@ class Stock
     /**
      * Get symbolid
      *
-     * @return \AppBundle\Entity\Symbol 
+     * @return \AppBundle\Entity\Symbol
      */
     public function getSymbolid()
     {

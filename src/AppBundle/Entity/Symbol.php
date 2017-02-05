@@ -47,7 +47,7 @@ class Symbol
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -70,7 +70,7 @@ class Symbol
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -103,15 +103,18 @@ class Symbol
     /**
      * Get portfolioid
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getPortfolioid()
     {
         return $this->portfolioid;
     }
-    
-    public function __toString() {
-    
+
+    /**
+     * @return type
+     */
+    public function __toString()
+    {
         return $this->name;
     }
 }

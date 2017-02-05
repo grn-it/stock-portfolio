@@ -15,6 +15,9 @@ class RegistrationSuccessSubscriber implements EventSubscriberInterface
 {
     private $router;
 
+    /**
+     * @param UrlGeneratorInterface $router
+     */
     public function __construct(UrlGeneratorInterface $router)
     {
         $this->router = $router;
@@ -25,16 +28,16 @@ class RegistrationSuccessSubscriber implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-                FOSUserEvents::REGISTRATION_SUCCESS => 'onRegistrationSuccess'
-        );
+        return array(FOSUserEvents::REGISTRATION_SUCCESS => 'onRegistrationSuccess');
     }
 
+    /**
+     * @param FormEvent $event
+     */
     public function onRegistrationSuccess(FormEvent $event)
     {
-        
         $url = $this->router->generate('portfolio_index');
-        
+
         $event->setResponse(new RedirectResponse($url));
     }
 }
