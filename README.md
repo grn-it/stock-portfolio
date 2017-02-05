@@ -22,11 +22,13 @@
 ```
 git clone https://github.com/grn-it/stock-portfolio.git
 ```
-
+Заходим в директорию **stock-portfolio** и выполняем:
 ```
 composer install
 ```
-
+```
+php app/console doctrine:database:create
+```
 ```
 php app/console doctrine:migrations:migrate
 ```
