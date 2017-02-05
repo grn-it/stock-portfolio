@@ -10,6 +10,8 @@ use Doctrine\ORM\EntityManager;
 
 use Scheb\YahooFinanceApi\Exception\ApiException;
 
+use \Predis\Client;
+
 /**
  * Сервис управления портфелями акций
  */
@@ -17,13 +19,18 @@ class StockManager
 {
     protected $apiClient;
     protected $em;
+    protected $redis;
 
     /**
+     *
      * @param EntityManager $em
+     * @param Client        $redis
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, \Predis\Client $redis)
     {
         $this->em = $em;
+
+        $this->redis = $redis;
 
         $this->apiClient = new ApiClient();
     }
@@ -76,8 +83,6 @@ class StockManager
         return $lastStocks;
     }
 
-
-
     /**
      * Возвращает сумму цен акций за указанный период
      *
@@ -89,6 +94,14 @@ class StockManager
     public function getStocksSum(Portfolio $portfolio, $startDate, $endDate)
     {
         $symbols = $portfolio->getSymbolid();
+
+        $redisKey = 'stock-sum:'.$portfolio->getId().':'.$startDate.':'.$endDate;
+
+        $redisData = $this->redis->get($redisKey);
+
+        if (!is_null($redisData)) {
+            return unserialize($redisData);
+        }
 
         $symbolIds = array();
 
@@ -103,6 +116,8 @@ class StockManager
         }
 
         $stocksSum = $this->em->getRepository('AppBundle:Stock')->getStocksSum($symbolIds);
+
+        $this->redis->set($redisKey, serialize($stocksSum));
 
         return $stocksSum;
     }
@@ -167,9 +182,25 @@ class StockManager
             $startDate = $dateRange['startDate'];
             $endDate = $dateRange['endDate'];
 
+            $redisKey = 'load-data:'.$symbolId.':'.$startDate.':'.$endDate;
+
+            $redisData = $this->redis->get($redisKey);
+
+            if (!is_null($redisData)) {
+                $stockData[$symbolId][] = unserialize($redisData);
+
+                continue;
+            }
+
+            $this->redis->set($redisKey, serialize(false));
+
             try {
+                $historicalData = $this->apiClient->getHistoricalData($symbolName, new \DateTime($startDate), new \DateTime($endDate));
+
                 // загружаем данные из Yahoo Finance
-                $stockData[$symbolId][] = $this->apiClient->getHistoricalData($symbolName, new \DateTime($startDate), new \DateTime($endDate));
+                $stockData[$symbolId][] = $historicalData;
+
+                $this->redis->set($redisKey, serialize($historicalData));
             } catch (ApiException $exception) {
                 // иногда бывает, что данных просто нет,
                 // если например запросить данные попадающие на выходные
@@ -378,6 +409,22 @@ class StockManager
     private function actualizeStockData($symbol)
     {
         $symbolId = $symbol->getId();
+
+        $redisKey = 'actualize:'.$symbolId;
+
+        $actualizeDate = $this->redis->get($redisKey);
+
+        $now = date('Y-m-d');
+
+        if (is_null($actualizeDate)) {
+            $this->redis->set($redisKey, serialize($now));
+        } else {
+            if (unserialize($actualizeDate) == $now) {
+                return true;
+            } else {
+                $this->redis->set($redisKey, serialize($now));
+            }
+        }
 
         $stockMaxDate = $this->em->getRepository('AppBundle:Stock')->getStockMaxDate($symbolId);
 

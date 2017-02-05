@@ -16,5 +16,5 @@ services:
           
     app.stock_manager:
         class: AppBundle\Stock\StockManager
-        arguments: [ @doctrine.orm.entity_manager ]
+        arguments: [ @doctrine.orm.entity_manager,@snc_redis.default]
         
