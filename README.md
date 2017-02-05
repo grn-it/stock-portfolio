@@ -30,3 +30,4 @@ composer install
 ```
 php app/console doctrine:migrations:migrate
 ```
+Должен быть запущен **Redis** по стандартному адресу (127.0.0.1:6379)
