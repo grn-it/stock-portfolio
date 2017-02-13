@@ -73,6 +73,6 @@ fos_user:
 snc_redis:
     clients:
         default:
-            type: predis
+            type: phpredis
             alias: default
-            dsn: redis://localhost
+            dsn: "redis://%redis_host%:%redis_port%"

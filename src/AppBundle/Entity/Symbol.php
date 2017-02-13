@@ -31,18 +31,17 @@ class Symbol
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="Portfolio", mappedBy="symbolid")
+     * @ORM\ManyToMany(targetEntity="Portfolio", mappedBy="symbols")
      */
-    private $portfolioid;
+    private $portfolio;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->portfolioid = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->portfolio = new \Doctrine\Common\Collections\ArrayCollection();
     }
-
 
     /**
      * Get id
@@ -78,36 +77,36 @@ class Symbol
     }
 
     /**
-     * Add portfolioid
+     * Add portfolio
      *
-     * @param \AppBundle\Entity\Portfolio $portfolioid
+     * @param \AppBundle\Entity\Portfolio $portfolio
      * @return Symbol
      */
-    public function addPortfolioid(\AppBundle\Entity\Portfolio $portfolioid)
+    public function addPortfolio(\AppBundle\Entity\Portfolio $portfolio)
     {
-        $this->portfolioid[] = $portfolioid;
+        $this->portfolio[] = $portfolio;
 
         return $this;
     }
 
     /**
-     * Remove portfolioid
+     * Remove portfolio
      *
-     * @param \AppBundle\Entity\Portfolio $portfolioid
+     * @param \AppBundle\Entity\Portfolio $portfolio
      */
-    public function removePortfolioid(\AppBundle\Entity\Portfolio $portfolioid)
+    public function removePortfolioid(\AppBundle\Entity\Portfolio $portfolio)
     {
-        $this->portfolioid->removeElement($portfolioid);
+        $this->portfolioid->removeElement($portfolio);
     }
 
     /**
-     * Get portfolioid
+     * Get portfolio
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getPortfolioid()
+    public function getPortfolio()
     {
-        return $this->portfolioid;
+        return $this->portfolio;
     }
 
     /**

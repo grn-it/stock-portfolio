@@ -14,8 +14,8 @@
 
     <div class="group-margin">
 
-      <select id="symbol" class="form-control" data-name="{{ form.children.symbolid.vars.full_name }}">
-        {% for choice in form.children.symbolid.vars.choices %}
+      <select id="symbol" class="form-control" data-name="{{ form.children.symbols.vars.full_name }}">
+        {% for choice in form.children.symbols.vars.choices %}
           <option value="{{ choice.value }}">{{ choice.label }}</option>
         {% endfor %}
       </select>

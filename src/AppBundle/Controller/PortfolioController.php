@@ -3,7 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Portfolio;
-
+use AppBundle\Data\Format\Highcharts\HighchartsFormat;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -26,9 +26,8 @@ class PortfolioController extends Controller
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $portfolios = $em->getRepository('AppBundle:Portfolio')->findBy(array ('userid' => $this->getUser()));
+        $em         = $this->getDoctrine()->getManager();
+        $portfolios = $em->getRepository('AppBundle:Portfolio')->findBy(array ('user' => $this->getUser()));
 
         return $this->render('portfolio/index.html.twig', array(
             'portfolios' => $portfolios,
@@ -47,7 +46,7 @@ class PortfolioController extends Controller
     {
         $portfolio = new Portfolio();
 
-        $portfolio->setUserid($this->getUser());
+        $portfolio->setUser($this->getUser());
 
         $form = $this->createForm('AppBundle\Form\PortfolioType', $portfolio);
         $form->handleRequest($request);
@@ -62,7 +61,7 @@ class PortfolioController extends Controller
 
         return $this->render('portfolio/new.html.twig', array(
             'portfolio' => $portfolio,
-            'form' => $form->createView(),
+            'form'      => $form->createView(),
         ));
     }
 
@@ -81,16 +80,14 @@ class PortfolioController extends Controller
             throw $this->createAccessDeniedException('Нет доступа');
         }
 
-        $deleteForm = $this->createDeleteForm($portfolio);
-
-        $stockManager = $this->get('app.stock_manager');
-
-        $stocks = $stockManager->getLastStocks($portfolio);
+        $deleteForm     = $this->createDeleteForm($portfolio);
+        $stockManager   = $this->get('app.stock_manager');
+        $stocks         = $stockManager->getLast($portfolio);
 
         return $this->render('portfolio/show.html.twig', array(
-            'portfolio' => $portfolio,
-            'stocks' => $stocks,
-            'delete_form' => $deleteForm->createView(),
+            'portfolio'     => $portfolio,
+            'stocks'        => $stocks,
+            'delete_form'   => $deleteForm->createView(),
         ));
     }
 
@@ -111,7 +108,7 @@ class PortfolioController extends Controller
         }
 
         $deleteForm = $this->createDeleteForm($portfolio);
-        $editForm = $this->createForm('AppBundle\Form\PortfolioType', $portfolio);
+        $editForm   = $this->createForm('AppBundle\Form\PortfolioType', $portfolio);
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
@@ -121,9 +118,9 @@ class PortfolioController extends Controller
         }
 
         return $this->render('portfolio/edit.html.twig', array(
-            'portfolio' => $portfolio,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
+            'portfolio'     => $portfolio,
+            'edit_form'     => $editForm->createView(),
+            'delete_form'   => $deleteForm->createView(),
         ));
     }
 
@@ -158,37 +155,24 @@ class PortfolioController extends Controller
             throw $this->createAccessDeniedException('Нет доступа');
         }
 
-        $startDate = '2015-01-01';
-        $endDate = '2017-02-04';
+        $stocksSum          = $this->get('app.stock_manager')->getStocksSum($portfolio);
+        $highchartsFormat   = new HighchartsFormat($stocksSum);
+        $response           = new Response();
 
-        $stocksSum = $this->get('app.stock_manager')->getStocksSum($portfolio, $startDate, $endDate);
-
-        $highchartsJson = $this->get('app.stock_manager')->getHighchartsJson($stocksSum);
-
-        // можно было бы использовать JsonResponse(),
-        // но плагин графика Highcharts требует нестандартный JSON
-        // подробнее в функции getHighchartsJson()
-        $response = new Response();
-
-        $response->setContent($highchartsJson);
-
+        $response->setContent($highchartsFormat->getJson());
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
     }
 
     /**
-     * Возвращает список портфелей
-     *
-     * Нужно для верхнего меню (раздел «Портфели»)
-     *
-     * @return type
+     * @Route("/list", name="portfolio_list")
+     * @Method({"GET"})
      */
     public function listAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $portfolios = $em->getRepository('AppBundle:Portfolio')->findBy(array ('userid' => $this->getUser()));
+        $em         = $this->getDoctrine()->getManager();
+        $portfolios = $em->getRepository('AppBundle:Portfolio')->findBy(array ('user' => $this->getUser()));
 
         return $this->render('portfolio/list.html.twig', array(
             'portfolios' => $portfolios,

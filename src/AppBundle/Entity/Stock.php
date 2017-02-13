@@ -78,9 +78,7 @@ class Stock
      *   @ORM\JoinColumn(name="symbolId", referencedColumnName="id")
      * })
      */
-    private $symbolid;
-
-
+    private $symbol;
 
     /**
      * Get id
@@ -254,25 +252,25 @@ class Stock
     }
 
     /**
-     * Set symbolid
+     * Set symbol
      *
-     * @param \AppBundle\Entity\Symbol $symbolid
+     * @param \AppBundle\Entity\Symbol $symbol
      * @return Stock
      */
-    public function setSymbolid(\AppBundle\Entity\Symbol $symbolid = null)
+    public function setSymbol(\AppBundle\Entity\Symbol $symbol = null)
     {
-        $this->symbolid = $symbolid;
+        $this->symbol = $symbol;
 
         return $this;
     }
 
     /**
-     * Get symbolid
+     * Get symbol
      *
      * @return \AppBundle\Entity\Symbol
      */
-    public function getSymbolid()
+    public function getSymbol()
     {
-        return $this->symbolid;
+        return $this->symbol;
     }
 }

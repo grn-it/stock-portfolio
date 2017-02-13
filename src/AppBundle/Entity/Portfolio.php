@@ -36,12 +36,12 @@ class Portfolio
      *   @ORM\JoinColumn(name="userId", referencedColumnName="id")
      * })
      */
-    private $userid;
+    private $user;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var \Doctrine\Common\Collections\ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="Symbol", inversedBy="portfolioid")
+     * @ORM\ManyToMany(targetEntity="Symbol", inversedBy="portfolio")
      * @ORM\JoinTable(name="portfolio_symbol",
      *   joinColumns={
      *     @ORM\JoinColumn(name="portfolioId", referencedColumnName="id")
@@ -51,14 +51,14 @@ class Portfolio
      *   }
      * )
      */
-    private $symbolid;
+    private $symbols;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->symbolid = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->symbols = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -95,74 +95,83 @@ class Portfolio
     }
 
     /**
-     * Set userid
+     * Set user
      *
-     * @param \AppBundle\Entity\User $userid
+     * @param \AppBundle\Entity\User $user
      * @return Portfolio
      */
-    public function setUserid(\AppBundle\Entity\User $userid = null)
+    public function setUser(\AppBundle\Entity\User $user = null)
     {
-        $this->userid = $userid;
+        $this->user = $user;
 
         return $this;
     }
 
     /**
-     * Get userid
+     * Get user
      *
      * @return \AppBundle\Entity\User
      */
-    public function getUserid()
+    public function getUser()
     {
-        return $this->userid;
+        return $this->user;
     }
 
     /**
-     * Add symbolid
+     * Add symbol
      *
-     * @param \AppBundle\Entity\Symbol $symbolid
+     * @param \AppBundle\Entity\Symbol $symbol
      * @return Portfolio
      */
-    public function addSymbolid(\AppBundle\Entity\Symbol $symbolid)
+    public function addSymbol(\AppBundle\Entity\Symbol $symbol)
     {
-        $this->symbolid[] = $symbolid;
+        $this->symbols[] = $symbol;
 
         return $this;
     }
 
     /**
-     * Remove symbolid
+     * Remove symbol
      *
      * @param \AppBundle\Entity\Symbol $symbolid
      */
-    public function removeSymbolid(\AppBundle\Entity\Symbol $symbolid)
+    public function removeSymbol(\AppBundle\Entity\Symbol $symbol)
     {
-        $this->symbolid->removeElement($symbolid);
+        $this->symbols->removeElement($symbol);
     }
 
     /**
-     * Get symbolid
+     * Get symbols
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\ArrayCollection
      */
-    public function getSymbolid()
+    public function getSymbols()
     {
-        return $this->symbolid;
+        return $this->symbols;
     }
 
+    public function getSymbolIds()
+    {
+        $symbolIds = $this->getSymbols()->map(function($symbol) {
+            return $symbol->getId();
+        })->toArray();
+        
+        return $symbolIds;
+    }
+    
     /**
-     * Проверяет, является ли указанный пользователь текущим
+     * Проверяет, является ли указанный пользователь владельцем портфеля
      *
      * @param \AppBundle\Entity\User $user
      * @return boolean
      */
     public function isOwner(\AppBundle\Entity\User $user)
     {
-        if (is_null($user) || is_null($this->getUserid())) {
+        if (is_null($user) || is_null($this->getUser())) {
             return false;
         }
 
-        if ($user->getId() === $this->getUserid()->getId()) {
+        if ($user->getId() === $this->getUser()->getId()) {
             return true;
         }
 

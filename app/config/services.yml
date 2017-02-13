@@ -13,8 +13,38 @@ services:
         arguments: [@router]
         tags:
           - { name: kernel.event_subscriber }
-          
+    
+    app.redis:
+        class: AppBundle\Cache\Redis\Cache
+        arguments: [%redis_host%,%redis_port%]
+    
+    app.yahoo_finance_api:
+        class: Scheb\YahooFinanceApi\ApiClient
+    
+    app.yahoo_finance_api_client:
+        class: AppBundle\ApiClient\YahooFinance\Client
+        arguments: [@app.yahoo_finance_api]
+    
+    app.date_util:
+        class: AppBundle\Util\Date\DateUtil
+    
+    app.stockRepository:
+        class: Doctrine\ORM\EntityRepository
+        factory: ["@doctrine.orm.entity_manager", getRepository]
+        arguments: 
+            - AppBundle\Entity\Stock
+    
+    app.symbolRepository:
+        class: Doctrine\ORM\EntityRepository
+        factory: ["@doctrine.orm.entity_manager", getRepository]
+        arguments: 
+            - AppBundle\Entity\Symbol
+    
+    app.stock_manager_class:
+        class: AppBundle\Model\Stock\Manager
+        arguments: [@app.stockRepository,@app.symbolRepository,@app.yahoo_finance_api_client,@app.date_util]
+        
     app.stock_manager:
-        class: AppBundle\Stock\StockManager
-        arguments: [ @doctrine.orm.entity_manager,@snc_redis.default]
+        class: AppBundle\Cache\Redis\Model\Stock\ManagerCache
+        arguments: [@app.stock_manager_class,@app.redis,@app.date_util]
         

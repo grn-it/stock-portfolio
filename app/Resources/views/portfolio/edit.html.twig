@@ -13,8 +13,8 @@
     </div>
 
     <div class="group-margin">
-      <select id="symbol" class="form-control" data-name="{{ edit_form.children.symbolid.vars.full_name }}">
-        {% for choice in edit_form.children.symbolid.vars.choices %}
+      <select id="symbol" class="form-control" data-name="{{ edit_form.children.symbols.vars.full_name }}">
+        {% for choice in edit_form.children.symbols.vars.choices %}
           <option value="{{ choice.value }}">{{ choice.label }}</option>
         {% endfor %}
       </select>
@@ -34,7 +34,7 @@
 
           <tbody>
 
-            {% if edit_form.children.symbolid.vars.data|length %}
+            {% if edit_form.children.symbols.vars.data|length %}
               {% set symbol_empty_style = "display: none;" %}
             {% else %}
                {% set symbol_empty_style = "" %}
@@ -44,9 +44,9 @@
                 <td colspan="2">Пусто</td>
               <tr>
 
-            {% for key, symbolName in edit_form.children.symbolid.vars.data %}
+            {% for key, symbolName in edit_form.children.symbols.vars.data %}
 
-              <tr class="row-symbol" data-symbol-id="{{ edit_form.children.symbolid.vars.value[key] }}"><td class="cell-symbol-name">{{ symbolName }}</td><td><button type="button" class="delete-symbol btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Удалить</button><input name="{{ edit_form.children.symbolid.vars.full_name }}" type=hidden value="{{ edit_form.children.symbolid.vars.value[key] }}" /></td></tr>
+              <tr class="row-symbol" data-symbol-id="{{ edit_form.children.symbols.vars.value[key] }}"><td class="cell-symbol-name">{{ symbolName }}</td><td><button type="button" class="delete-symbol btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Удалить</button><input name="{{ edit_form.children.symbols.vars.full_name }}" type=hidden value="{{ edit_form.children.symbols.vars.value[key] }}" /></td></tr>
 
             {% endfor %}
 

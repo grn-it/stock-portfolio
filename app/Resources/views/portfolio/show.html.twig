@@ -30,7 +30,7 @@
           {% endif %}
 
           <tr>
-            <td>{{ stock.symbolid.name }}</td>
+            <td>{{ stock.symbols.name }}</td>
             <td>{{ stock.close|number_format(2) }}</td>
             <td><div class="{{ change_color }}">{{ stock.change|number_format(2) }}</div></td>
             <td>{{ stock.volume|number_format(0, ',', ',') }}</td>
