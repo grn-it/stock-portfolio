@@ -9,17 +9,19 @@ use AppBundle\Util\Date\DateUtilInterface;
 use AppBundle\Builder\Entity\StockBuilder;
 use AppBundle\Repository\StockRepository;
 use AppBundle\Repository\SymbolRepository;
+use AppBundle\Cache\CacheInterface;
 
 /**
  * Сервис управления портфелями акций
  */
 class Manager
 {
-    private $stockRepository;
-    private $symbolRepository;
-    private $financeClient;
-    private $dateUtil;
-    private $lastClose;
+    private     $stockRepository;
+    private     $symbolRepository;
+    private     $financeClient;
+    private     $lastClose;
+    protected   $dateUtil;
+    protected   $cache;
 
     /**
      * @param StockRepository           $stockRepository
@@ -27,11 +29,12 @@ class Manager
      * @param FinanceClientInterface    $financeClient
      * @param DateUtilInterface         $dateUtil
      */
-    public function __construct(StockRepository $stockRepository, SymbolRepository $symbolRepository, FinanceClientInterface $financeClient, DateUtilInterface $dateUtil)
+    public function __construct(StockRepository $stockRepository, SymbolRepository $symbolRepository, FinanceClientInterface $financeClient, CacheInterface $cache, DateUtilInterface $dateUtil)
     { 
         $this->stockRepository  = $stockRepository;
         $this->symbolRepository = $symbolRepository;
         $this->financeClient    = $financeClient;
+        $this->cache            = $cache;
         $this->dateUtil         = $dateUtil;
     }
     
@@ -98,30 +101,15 @@ class Manager
     {
         foreach ($stockData as $symbolId => $stockDataByDateRanges) {
             $symbol = $this->symbolRepository->find($symbolId);
-
+            
+            $this->setLastClose(null);
+            
             foreach ($stockDataByDateRanges as $stockDataByDateRange) {
                 $this->saveStockDataByDateRange($symbol, $stockDataByDateRange);
             }
         }
     }
 
-    /**
-     * @param string $close
-     * @return string
-     */
-    public function calculateChange($close)
-    {
-        $change = null;
-
-        if (!is_null($this->lastClose)) {
-            $change = $close - $this->lastClose;
-        } else {
-            $this->lastClose = $close;
-        }
-
-        return $change;
-    }
-    
     /**
      * @param Symbol    $symbol
      * @param array     $stockDataByDateRange
@@ -155,6 +143,23 @@ class Manager
     }
     
     /**
+     * @param string $close
+     * @return string
+     */
+    public function calculateChange($close)
+    {
+        $change = null;
+
+        if (!is_null($this->getLastClose())) {
+            $change = $close - $this->getLastClose();
+        }
+
+        $this->setLastClose($close);
+        
+        return $change;
+    }
+    
+    /**
      * @param integer $symbolId
      * @return boolean
      */
@@ -167,6 +172,22 @@ class Manager
         return false;
     }
 
+    /**
+     * @return string
+     */
+    public function getLastClose()
+    {
+        return $this->lastClose;
+    }
+    
+    /**
+     * @param string $lastClose
+     */
+    public function setLastClose($lastClose)
+    {
+        $this->lastClose = $lastClose;
+    }
+    
     /**
      * @param Symbol $symbol
      * @param string $startDate
@@ -195,7 +216,7 @@ class Manager
     /**
      * @param Symbol $symbol
      */
-    private function actualizeStockData($symbol)
+    protected function actualizeStockData(Symbol $symbol)
     {
         $stockMaxDate   = $this->stockRepository->getStockMaxDate($symbol);
         

@@ -36,4 +36,13 @@ class Cache implements CacheInterface
     {
         $this->redis->set($key, serialize($value));
     }
+    
+    /**
+     * @param string $key
+     * @return boolean
+     */
+    public function exists($key)
+    {
+        return $this->redis->exists($key);
+    }
 }

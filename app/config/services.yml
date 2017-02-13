@@ -42,9 +42,8 @@ services:
     
     app.stock_manager_class:
         class: AppBundle\Model\Stock\Manager
-        arguments: [@app.stockRepository,@app.symbolRepository,@app.yahoo_finance_api_client,@app.date_util]
+        arguments: [@app.stockRepository,@app.symbolRepository,@app.yahoo_finance_api_client,@app.redis,@app.date_util]
         
     app.stock_manager:
         class: AppBundle\Cache\Redis\Model\Stock\ManagerCache
-        arguments: [@app.stock_manager_class,@app.redis,@app.date_util]
-        
+        arguments: [@app.stockRepository,@app.symbolRepository,@app.yahoo_finance_api_client,@app.redis,@app.date_util]

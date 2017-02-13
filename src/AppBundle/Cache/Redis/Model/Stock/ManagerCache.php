@@ -4,49 +4,77 @@ namespace AppBundle\Cache\Redis\Model\Stock;
 
 use AppBundle\Entity\Portfolio;
 use AppBundle\Entity\Symbol;
-use AppBundle\Cache\CacheInterface;
-use AppBundle\Util\Date\DateUtilInterface;
 use AppBundle\Model\Stock\Manager;
 
-class ManagerCache
+class ManagerCache extends Manager
 {
-    private $manager;
-    private $cache;
-    private $dateUtil;
-
-    /**
-     * @param Manager           $manager
-     * @param CacheInterface    $cache
-     * @param DateUtilInterface $dateUtil
-     */
-    public function __construct(Manager $manager, CacheInterface $cache, DateUtilInterface $dateUtil)
-    {
-        $this->manager  = $manager;
-        $this->cache    = $cache;
-        $this->dateUtil = $dateUtil;
-    }
-    
     /**
      * @param Portfolio $portfolio
      * @param string    $startDate
      * @param string    $endDate
      * @return mixed
      */
-    public function getStocksSum(Portfolio $portfolio, $startDate, $endDate)
+    public function getStocksSum(Portfolio $portfolio, $startDate = null, $endDate = null)
     {
-        $cacheKey = 'stock-sum:'.$portfolio->getId().':'.$startDate.':'.$endDate;
-
-        $cacheData = $this->cache->get($cacheKey);
+        $startDate  = $this->dateUtil->getDefaultStockStartDateIfNull($startDate);
+        $endDate    = $this->dateUtil->getToday();
+        $cacheKey   = 'stock-sum:'.$portfolio->getId().':'.$startDate.':'.$endDate;
+        $cacheData  = $this->cache->get($cacheKey);
 
         if ($cacheData) {
             return $cacheData;
         }
 
-        $stockSum = $this->__call(__FUNCTION__, func_get_args());
+        $stockSum = parent::getStocksSum($portfolio, $startDate, $endDate);
 
         $this->cache->set($cacheKey, $stockSum);
         
         return $stockSum;
+    }
+    
+    /**
+     * @param array $allStockData
+     * @param array $newStockData
+     */
+    public function appendStockData(&$allStockData, $newStockData)
+    {
+        if (!isset($allStockData)) {
+            $allStockData = $newStockData;
+        } else {
+            $allStockData = array_merge($allStockData, $newStockData);
+        }
+    }
+    
+    /**
+     * @param string    $cacheKey
+     * @param array     $stockData
+     */
+    public function appendStockDataIfCacheExist($cacheKey, &$stockData)
+    {
+        $cacheData = $this->cache->get($cacheKey);
+                
+        if ($cacheData !== false) {
+            $this->appendStockData($stockData, $cacheData);
+        }
+    }
+    
+    /**
+     * @param array $financeData
+     * @param array $stockData
+     * @param string $cacheKey
+     */
+    public function appendStockDataIfDataExist($financeData, &$stockData, $cacheKey)
+    {
+        $cacheValue = false;
+        
+        if (!empty($financeData)) {
+            $financeData    = array_shift($financeData);
+            $cacheValue     = $financeData;
+
+            $this->appendStockData($stockData, $financeData);
+        }
+        
+        $this->cache->set($cacheKey, $financeData);
     }
     
     /**
@@ -62,25 +90,13 @@ class ManagerCache
         foreach ($dateRanges as $dateRange) {
             $startDate  = $dateRange['startDate'];
             $endDate    = $dateRange['endDate'];
+            $cacheKey   = 'load-data:'.$symbolId.':'.$startDate.':'.$endDate;
 
-            $cacheKey = 'load-data:'.$symbolId.':'.$startDate.':'.$endDate;
-
-            $cacheData = $this->cache->get($cacheKey);
-
-            if (!is_null($cacheData)) {
-                $stockData[$symbolId][] = $cacheData;
-
-                continue;
-            }
-
-            $this->cache->set($cacheKey, false);
-
-            $financeData = $this->__call(__FUNCTION__, array ($symbol, array ($dateRange)));
-            
-            if (!is_null($financeData)) {
-                array_shift($financeData);
-                $stockData[$symbolId][] = $financeData;
-                $this->cache->set($cacheKey, $financeData);
+            if ($this->cache->exists($cacheKey)) {
+                $this->appendStockDataIfCacheExist($cacheKey, $stockData[$symbolId]);
+            } else {
+                $financeData = parent::getStockData($symbol, array ($dateRange));
+                $this->appendStockDataIfDataExist($financeData, $stockData[$symbolId], $cacheKey);
             }
         }
 
@@ -91,7 +107,7 @@ class ManagerCache
      * @param Symbol $symbol
      * @return boolean
      */
-    public function actualizeStockData(Symbol $symbol)
+    protected function actualizeStockData(Symbol $symbol)
     {
         $cacheKey       = 'actualize:'.$symbol->getId();
         $actualizeDate  = $this->cache->get($cacheKey);
@@ -103,11 +119,6 @@ class ManagerCache
         
         $this->cache->set($cacheKey, $now);
         
-        $this->__call(__FUNCTION__, func_get_args());
-    }
-    
-    public function __call($method, $arguments)
-    {
-        return call_user_func_array(array ($this->manager, $method), $arguments);
+        parent::actualizeStockData($symbol);
     }
 }

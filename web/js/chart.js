@@ -10,6 +10,10 @@ $(function () {
                 rangeSelectorFrom: "С",
                 rangeSelectorTo: "По",
                 rangeSelectorZoom: "Период"
+            },
+            
+            global: {
+                useUTC: false
             }
         });
     
