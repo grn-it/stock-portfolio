@@ -103,7 +103,7 @@ class StockBuilder implements StockBuilderInterface
     {
         $stock = new Stock();
 
-        $stock->setSymbolid($this->symbol);
+        $stock->setSymbol($this->symbol);
         $stock->setDate($this->date);
         $stock->setOpen($this->open);
         $stock->setHigh($this->high);

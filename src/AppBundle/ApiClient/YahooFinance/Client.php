@@ -38,7 +38,6 @@ class Client implements FinanceClientInterface
             }
             
         } catch (ApiException $exception) {
-            dump($exception->getMessage());
         }
         
         return $historicalData;

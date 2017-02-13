@@ -137,7 +137,7 @@ class Manager
             
             $stockBuilder = new StockBuilder();
 
-            $stockBuilder->setSymbolid($symbol);
+            $stockBuilder->setSymbol($symbol);
             $stockBuilder->setDate(new \DateTime($stockDataItem['Date']));
             $stockBuilder->setOpen($stockDataItem['Open']);
             $stockBuilder->setHigh($stockDataItem['High']);
